@@ -1,0 +1,28 @@
+html {
+    height: 100%;
+}
+
+body{
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.main {
+    height: 100%;
+}
+
+
+.box{
+    height: 100%;
+    background-color: azure;
+    text-align: center;
+}
+
+.btn {
+    color:black;
+    font-size: 30px;
+}
+
