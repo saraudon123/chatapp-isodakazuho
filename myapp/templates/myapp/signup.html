@@ -1,13 +1,21 @@
 {% extends 'myapp/base.html' %}
 
+{% load static %}
+
+{% block extra_style %}<link rel="stylesheet" href="{% static 'myapp/css/signup.css' %}"> {% endblock %}
+
 {% block header-title %}会員登録{% endblock %}
 
 {% block content %}
-<form action="{% url 'index' %}" method="POST" enctype="multipart/form-data">
-{% csrf_token %}
+<div class="form">
+    <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
 
-    {{ form.as_p }}
-    <button type="submit">submit</button>
+        {{ form.as_p }}
+        <button type="submit">submit</button>
 
-</form>
+    </form>
+</div>
 {% endblock %}
+
+{% block footer %}{% endblock %}

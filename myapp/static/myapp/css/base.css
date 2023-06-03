@@ -8,6 +8,8 @@ body{
 
 /* ヘッダー */
 .header{
+    position: fixed;
+    background-color: darkgray;
     width: 100vw;
     height: 64px;
     border-bottom: solid 1px #9b9b9b;
@@ -39,6 +41,7 @@ body{
     height: 64px;
 }
 .footer-container{
+    background-color: darkgray;
     display: flex;
     position: fixed;
     bottom: 0;

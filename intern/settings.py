@@ -126,12 +126,22 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-)
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, "myapp/static"),
+# )
+
+STATIC_ROOT = BASE_DIR /"staticfiles"
 
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media_local'
 
 AUTH_USER_MODEL = "myapp.CustomUser"
+
+LANGUAGE_CODE = 'ja'
+
+LOGIN_URL = "login"
+
+LOGIN_REDIRECT_URL = "friends"
+
+LOGOUT_REDIRECT_URL = "index"

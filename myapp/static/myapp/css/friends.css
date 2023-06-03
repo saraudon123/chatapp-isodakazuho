@@ -1,0 +1,42 @@
+.friends{
+    padding: 64px 0px;
+    color: black;
+}
+
+a{
+    color: black;
+    text-decoration: none;
+}
+
+.friends-list{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.friend-boxcontent{
+    text-align: right;
+}
+
+.friend-talk{
+    display: flex;
+    height: 96px;
+    margin: 0 16px;
+    justify-content:space-between;
+}
+
+.friend-box{
+    border-bottom: 1px solid black;
+}
+
+.friend-boxcontent1{
+    padding: 0;
+    margin: 28px 0;
+    font-size: 40px;
+}
+
+.friend-boxcontent2{
+    padding: 0;
+    margin: 28px 0;
+    font-size: 20px;
+}
