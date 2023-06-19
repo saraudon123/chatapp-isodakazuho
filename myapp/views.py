@@ -3,14 +3,16 @@ from urllib import request
 from django.shortcuts import redirect, render
 from django.contrib.auth import login, authenticate
 from .models import CustomUser, Talk
-from django.urls import reverse_lazy
-from .forms import SignUpForm, LoginForm
+from django.urls import reverse_lazy, reverse
+from .forms import SignUpForm, LoginForm, TalkRoomForm
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView
 from django.db.models import Max, Q
 from django.db.models.functions import Greatest, Coalesce
+from django.views.generic.edit import CreateView
+
 
 
 def index(request):
@@ -62,18 +64,43 @@ class FriendView(LoginRequiredMixin,ListView):
     template_name = "myapp/friends.html"
     context_object_name = 'friends'
 
-
     def get_queryset(self):
         queryset = CustomUser.objects.exclude(id=self.request.user.id).annotate(
             receivetime = Max("senddesu__time", filter=Q(senddesu__receiver=self.request.user)),
             sendtime = Max("receivedesu__time", filter=Q(receivedesu__sender=self.request.user)),
             talktime = Greatest("sendtime", "receivetime",),
-            latesttime = Coalesce("talktime", "date_joined",),
+            latesttime = Coalesce("talktime", "receivetime", "date_joined",),
         ).order_by("-latesttime").all()
         return queryset
 
-def talk_room(request):
-    return render(request, "myapp/talk_room.html")
+class TalkRoomView(LoginRequiredMixin, CreateView):
+    template_name = "myapp/talk_room.html"
+    form_class = TalkRoomForm
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        friend_id = self.kwargs['pk']
+        friend = CustomUser.objects.get(id=friend_id)
+        talks = Talk.objects.filter(
+            Q(sender=self.request.user, receiver=friend) |
+            Q(receiver=self.request.user, sender=friend)
+        ).order_by("time")
+        context["friend"] = friend
+        context["talks"] = talks
+        return context
+
+    def form_valid(self, form):
+        friend_id = self.kwargs['pk']
+        friend = CustomUser.objects.get(id=friend_id)
+        talkform = form.save(commit=False)
+        talkform.sender = self.request.user
+        talkform.receiver = friend
+        talkform.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('talk_room', kwargs={'pk': self.kwargs['pk']})
+
 
 def setting(request):
     return render(request, "myapp/setting.html")

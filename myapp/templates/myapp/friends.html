@@ -11,7 +11,7 @@
     <ul class="friends-list">
         {% for friend in friends %}
             <li class="friend-box">
-                <a href="#" class="friend-talk">
+                <a href="{% url 'talk_room' friend.pk %}" class="friend-talk">
                     <img src="{{ friend.img.url }}">
                     <div class="friend-boxcontent1">
                         {{ friend.username }}
