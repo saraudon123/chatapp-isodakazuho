@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 import os
+import environ # 追加
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -145,3 +146,12 @@ LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "friends"
 
 LOGOUT_REDIRECT_URL = "index"
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+if os.path.isfile('.env'): # .envファイルが存在しない時にもエラーが発生しないようにする
+    env = environ.Env(DEBUG=(bool, False),)
+    environ.Env.read_env('.env')
+
+    DEBUG = env('DEBUG')
+    ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
