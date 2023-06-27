@@ -9,19 +9,23 @@
 {% block content %}
 <div class="setting">
     <div class="box">
-        <a href="{% url '' %}">ユーザー名変更</a>
+        <div class="button">
+            <a href="{% url 'username_change' %}" class="content">ユーザー名変更</a>
+        </div>
+        <div class="button">
+            <a href="{% url 'email_change' %}" class="content">メールアドレス変更</a>
+        </div>
+        <div class="button">
+            <a href="{% url 'icon_change' %}" class="content">アイコン変更</a>
+        </div>
+        <div class="button">
+            <a href="{% url 'password_change' %}" class="content">パスワード変更</a>
+        </div>
+        <div class="button">
+            <a href="{% url 'logout' %}" class="content">ログアウト</a>
+        </div>
     </div>
 
-    <div class="box">
-        <a href="{% url '' %}">メールアドレス変更</a>
-    </div>
-
-    <div class="box">
-        <a href="{% url '' %}">アイコン変更</a>
-    </div>
     
-    <div class="box">
-        <a href="{% url '' %}">パスワード変更</a>
-    </div>
 </div>
 {% endblock %}

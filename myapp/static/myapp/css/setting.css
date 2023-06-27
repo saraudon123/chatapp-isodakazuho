@@ -1,0 +1,19 @@
+.setting{
+    position: absolute;
+    top: 64px;
+    bottom: 64px;
+    width: 100%;
+}
+
+.box{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content:space-around;	
+    align-items: center;
+}
+
+.content{
+    text-decoration: none;
+    color: black;
+}
