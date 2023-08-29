@@ -8,6 +8,13 @@
 
 {% block content %}
 <div class="friends">
+    <form action="{% url 'friends' %}" method="GET">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">検索</button>
+    </form>
     <ul class="friends-list">
         {% for friend in friends %}
             <li class="friend-box">

@@ -22,3 +22,6 @@ class UsernameChangeForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ('username',)
+
+class FriendSearchForm(forms.Form):
+    keyword = forms.CharField(max_length=20, label="名前で検索", required=False)

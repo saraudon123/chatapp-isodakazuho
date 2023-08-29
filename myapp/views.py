@@ -1,10 +1,11 @@
+from ast import keyword
 from atexit import register
 from urllib import request
 from django.shortcuts import redirect, render
 from django.contrib.auth import login, authenticate
 from .models import CustomUser, Talk
 from django.urls import reverse_lazy, reverse
-from .forms import SignUpForm, LoginForm, TalkRoomForm, UsernameChangeForm
+from .forms import SignUpForm, LoginForm, TalkRoomForm, UsernameChangeForm, FriendSearchForm
 from django.contrib.auth.views import LoginView, PasswordChangeView, PasswordChangeDoneView, LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
@@ -59,18 +60,52 @@ class LoginView(LoginView):
     form_class = LoginForm
 
 
-class FriendView(LoginRequiredMixin,ListView):
+class FriendView(LoginRequiredMixin, ListView):
     template_name = "myapp/friends.html"
     context_object_name = 'friends'
+    model = CustomUser
 
-    def get_queryset(self):
-        queryset = CustomUser.objects.exclude(id=self.request.user.id).annotate(
-            receivetime = Max("senddesu__time", filter=Q(senddesu__receiver=self.request.user)),
-            sendtime = Max("receivedesu__time", filter=Q(receivedesu__sender=self.request.user)),
-            talktime = Greatest("sendtime", "receivetime",),
-            latesttime = Coalesce("talktime", "receivetime", "date_joined",),
-        ).order_by("-latesttime").all()
-        return queryset
+    # def get_queryset(self):
+    #     queryset = CustomUser.objects.exclude(id=self.request.user.id).annotate(
+    #         receivetime = Max("senddesu__time", filter=Q(senddesu__receiver=self.request.user)),
+    #         sendtime = Max("receivedesu__time", filter=Q(receivedesu__sender=self.request.user)),
+    #         talktime = Greatest("sendtime", "receivetime",),
+    #         latesttime = Coalesce("talktime", "receivetime", "date_joined",),
+    #     ).order_by("-latesttime").all()
+
+    #     form = FriendSearchForm()
+    #     if form.is_valid():
+    #         keyword = form.cleaned_data['keyword']
+    #         queryset = queryset.filter(username__contains=keyword)
+
+    #     return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form = FriendSearchForm(self.request.GET)
+
+        if form.is_valid():
+            print("a")
+            keyword = form.cleaned_data.get("keyword")
+            friends = CustomUser.objects.exclude(id=self.request.user.id).annotate(
+                receivetime = Max("senddesu__time", filter=Q(senddesu__receiver=self.request.user)),
+                sendtime = Max("receivedesu__time", filter=Q(receivedesu__sender=self.request.user)),
+                talktime = Greatest("sendtime", "receivetime",),
+                latesttime = Coalesce("talktime", "receivetime", "date_joined",),
+            ).order_by("-latesttime").filter(username__contains=keyword)
+        else:
+            print("A")
+            friends = CustomUser.objects.exclude(id=self.request.user.id).annotate(
+                receivetime = Max("senddesu__time", filter=Q(senddesu__receiver=self.request.user)),
+                sendtime = Max("receivedesu__time", filter=Q(receivedesu__sender=self.request.user)),
+                talktime = Greatest("sendtime", "receivetime",),
+                latesttime = Coalesce("talktime", "receivetime", "date_joined",),
+            ).order_by("-latesttime").all()
+
+        context["friends"] = friends
+        context["form"] = form
+        return context
+
 
 class TalkRoomView(LoginRequiredMixin, CreateView):
     template_name = "myapp/talk_room.html"
