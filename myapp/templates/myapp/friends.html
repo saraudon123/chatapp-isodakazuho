@@ -2,23 +2,27 @@
 
 {% load static %}
 
+{% load widget_tweaks %}
+
 {% block extra_style %}<link rel="stylesheet" href="{% static 'myapp/css/friends.css' %}"> {% endblock %}
 
 {% block header-title %}友達{% endblock %}
 
 {% block content %}
 <div class="friends">
-    <form action="{% url 'friends' %}" method="GET">
-        {% csrf_token %}
+    <div class="searchformbox">
+        <form action="{% url 'myapp:friends' %}" method="GET" class="searchform">
+            {% csrf_token %}
 
-        {{ form.as_p }}
+            {{ form.keyword|add_class:"form-control" }}
 
-        <button type="submit">検索</button>
-    </form>
+            <button type="submit" class="searchbutton">検索</button>
+        </form>
+    </div>
     <ul class="friends-list">
         {% for friend in friends %}
             <li class="friend-box">
-                <a href="{% url 'talk_room' friend.pk %}" class="friend-talk">
+                <a href="{% url 'myapp:talk_room' friend.pk %}" class="friend-talk">
                     <img src="{{ friend.img.url }}">
                     <div class="friend-boxcontent1">
                         {{ friend.username }}

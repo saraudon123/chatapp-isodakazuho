@@ -4,6 +4,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import CustomUser, Talk
 
+
 class SignUpForm(UserCreationForm):
     class Meta:
         model = CustomUser

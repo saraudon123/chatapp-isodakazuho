@@ -40,6 +40,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'myapp',
+    'accounts.apps.AccountsConfig',
+
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -141,11 +148,10 @@ AUTH_USER_MODEL = "myapp.CustomUser"
 
 LANGUAGE_CODE = 'ja'
 
-LOGIN_URL = "login"
 
-LOGIN_REDIRECT_URL = "friends"
+LOGIN_REDIRECT_URL = "myapp:friends"
 
-LOGOUT_REDIRECT_URL = "index"
+LOGOUT_REDIRECT_URL = "myapp:index"
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
@@ -155,3 +161,22 @@ if os.path.isfile('.env'): # .envファイルが存在しない時にもエラ�
 
     DEBUG = env('DEBUG')
     ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = (
+    'allauth.account.auth_backends.AuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_USERNAME_REQUIRED = False
+
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_REQUIRED = True
+
+ACCOUNT_LOGOUT_ON_GET = True
+
+DEFAULT_FROM_EMAIL = 'admin@example.com'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' 

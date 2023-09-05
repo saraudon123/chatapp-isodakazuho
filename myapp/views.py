@@ -18,24 +18,6 @@ from django.views.generic.edit import CreateView, UpdateView
 def index(request):
     return render(request, "myapp/index.html")
 
-# def signup_view(request):
-#     if request.method == 'GET':
-#         form = SignUpForm()
-#     elif request.method == 'POST':
-#         form = SignUpForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             form.save()
-#             username = form.cleaned_data["username"]
-#             email = form.cleaned_data["email"]
-#             password = form.cleaned_data["password1"]
-#             img = form.cleaned_data["img"]
-#             user = authenticate(username=username, email=email, password=password, img=img)
-#             login(request, user)
-
-#             return redirect('index')
-        
-#     context = {"form":form}
-#     return render(request, "myapp/signup.html", context)
 
 class SignupView(CreateView):
     template_name = 'myapp/signup.html'
@@ -44,16 +26,6 @@ class SignupView(CreateView):
     success_url = '/'
     # success_url = reverse_lazy('myapp:index')
 
-
-
-# def login_view(request):
-#     if request.method == 'GET':
-#         form = LoginForm()
-#     elif request.method == 'POST':
-#         form = LoginForm(request.POST)
-#         if form.is_valid():
-
-#     return render(request, "myapp/login.html")
 
 class LoginView(LoginView):
     template_name = "myapp/login.html"
@@ -133,30 +105,18 @@ class TalkRoomView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('talk_room', kwargs={'pk': self.kwargs['pk']})
+        return reverse('myapp:talk_room', kwargs={'pk': self.kwargs['pk']})
 
 
 def setting(request):
     return render(request, "myapp/setting.html")
 
-# class UsernameChangeView(LoginRequiredMixin, CreateView):
-#     template_name = "myapp/username_change.html"
-#     form_class = UsernameChangeForm
-
-#     def form_valid(self, form):
-#         form = form.save(commit=False)
-#         form.user = self.request.user
-#         form.save()
-#         return super().form_valid(form)
-
-#     def get_success_url(self):
-#         return reverse('username_change_done')
     
 class UsernameChangeView(LoginRequiredMixin, UpdateView):
     model = CustomUser
     fields = ('username',)
     template_name = "myapp/username_change.html"
-    success_url = reverse_lazy('username_change_done')
+    success_url = reverse_lazy('myapp:username_change_done')
 
     def get_object(self):
         me = self.request.user
@@ -166,7 +126,7 @@ class EmailChangeView(LoginRequiredMixin, UpdateView):
     model = CustomUser
     fields = ('email',)
     template_name = "myapp/email_change.html"
-    success_url = reverse_lazy('email_change_done')
+    success_url = reverse_lazy('myapp:email_change_done')
 
     def get_object(self):
         me = self.request.user
@@ -182,7 +142,7 @@ class IconChangeView(LoginRequiredMixin, UpdateView):
     model = CustomUser
     fields = ('img',)
     template_name = "myapp/icon_change.html"
-    success_url = reverse_lazy('icon_change_done')
+    success_url = reverse_lazy('myapp:icon_change_done')
 
     def get_object(self):
         me = self.request.user
@@ -193,6 +153,7 @@ def icon_change_done(request):
 
 class PasswordChangeView(LoginRequiredMixin, PasswordChangeView):
     template_name = "myapp/password_change.html"
+    success_url = reverse_lazy('myapp:password_change_done')
 
 class PasswordChangeDoneView(LoginRequiredMixin, PasswordChangeDoneView):
     template_name = "myapp/password_change_done.html"

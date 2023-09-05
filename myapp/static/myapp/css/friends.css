@@ -40,3 +40,20 @@ a{
     margin: 28px 0;
     font-size: 20px;
 }
+
+.searchform{
+    display: flex;
+    align-items: stretch;
+    height: 10%;
+    width: 100%;
+}
+
+p{
+    display: flex;
+    align-items: stretch;
+}
+
+.searchformbox{
+    display: flex;
+    align-items: stretch;
+}

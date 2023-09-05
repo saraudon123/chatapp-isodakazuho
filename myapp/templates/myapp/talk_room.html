@@ -7,13 +7,13 @@
 {% block header-title %}
 <div class="header-box">
     <div class="return">
-        <a href="{% url 'friends' %}">戻る</a>
+        <a href="{% url 'myapp:friends' %}">戻る</a>
     </div>
     <div class="friend-name">
         <p>{{ friend.username }}</p>
     </div>
     <div class="reload">
-        <a href="{% url 'talk_room' friend.pk %}">更新</a>
+        <a href="{% url 'myapp:talk_room' friend.pk %}">更新</a>
     </div>
 </div>
 {% endblock %}
@@ -29,7 +29,7 @@
     {% endfor %}    
     </div>
     <div class="form">
-        <form action="{% url 'talk_room' friend.id %}" method="POST" class="send">
+        <form action="{% url 'myapp:talk_room' friend.id %}" method="POST" class="send">
             {% csrf_token %}
             {{ form.message }}
             <button type="submit" class="sendbutton">送信</button>
