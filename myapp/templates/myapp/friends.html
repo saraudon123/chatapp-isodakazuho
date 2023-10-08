@@ -23,7 +23,7 @@
         {% for friend in friends %}
             <li class="friend-box">
                 <a href="{% url 'myapp:talk_room' friend.pk %}" class="friend-talk">
-                    <img src="{{ friend.img.url }}">
+                    <img src="{{ friend.img }}" class="profile-img">
                     <div class="friend-boxcontent1">
                         {{ friend.username }}
                     </div>

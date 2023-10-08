@@ -7,7 +7,7 @@
 {% block header-title %}アイコン変更{% endblock %}
 
 {% block content %}
-<form method="POST" class="form">
+<form method="POST" class="form" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">変更</button>

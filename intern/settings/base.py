@@ -28,9 +28,11 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'widget_tweaks',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -104,7 +106,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR /"staticfiles"
 
 
-MEDIA_URL = '/media/'
+MEDIA_URL = ''
 
 MEDIA_ROOT = BASE_DIR / 'media_local'
 
@@ -140,4 +142,8 @@ ACCOUNT_LOGOUT_ON_GET = True
 
 DEFAULT_FROM_EMAIL = 'admin@example.com'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' 
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]

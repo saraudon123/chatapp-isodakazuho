@@ -1,11 +1,12 @@
 from ast import keyword
 from atexit import register
+import email
 from urllib import request
 from django.shortcuts import redirect, render
 from django.contrib.auth import login, authenticate
 from .models import CustomUser, Talk
 from django.urls import reverse_lazy, reverse
-from .forms import SignUpForm, LoginForm, TalkRoomForm, UsernameChangeForm, FriendSearchForm
+from .forms import SignUpForm, LoginForm, TalkRoomForm, UsernameChangeForm, FriendSearchForm, ImageChangeForm
 from django.contrib.auth.views import LoginView, PasswordChangeView, PasswordChangeDoneView, LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
@@ -59,20 +60,21 @@ class FriendView(LoginRequiredMixin, ListView):
         if form.is_valid():
             print("a")
             keyword = form.cleaned_data.get("keyword")
-            friends = CustomUser.objects.exclude(id=self.request.user.id).annotate(
+            friends = CustomUser.objects.prefetch_related("talk_set").exclude(id=self.request.user.id).annotate(
                 receivetime = Max("senddesu__time", filter=Q(senddesu__receiver=self.request.user)),
                 sendtime = Max("receivedesu__time", filter=Q(receivedesu__sender=self.request.user)),
                 talktime = Greatest("sendtime", "receivetime",),
                 latesttime = Coalesce("talktime", "receivetime", "date_joined",),
-            ).order_by("-latesttime").filter(username__contains=keyword)
+            ).order_by("-latesttime").filter(Q(username__icontains=keyword) | Q(email__icontains=keyword)).values("username", "img", "latesttime", "pk")
+            # print(friends)
         else:
             print("A")
-            friends = CustomUser.objects.exclude(id=self.request.user.id).annotate(
+            friends = CustomUser.objects.prefetch_related("talk_set").exclude(id=self.request.user.id).annotate(
                 receivetime = Max("senddesu__time", filter=Q(senddesu__receiver=self.request.user)),
                 sendtime = Max("receivedesu__time", filter=Q(receivedesu__sender=self.request.user)),
                 talktime = Greatest("sendtime", "receivetime",),
                 latesttime = Coalesce("talktime", "receivetime", "date_joined",),
-            ).order_by("-latesttime").all()
+            ).order_by("-latesttime").values("username", "img", "latesttime", "pk")
 
         context["friends"] = friends
         context["form"] = form
@@ -87,7 +89,7 @@ class TalkRoomView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(*args, **kwargs)
         friend_id = self.kwargs['pk']
         friend = CustomUser.objects.get(id=friend_id)
-        talks = Talk.objects.filter(
+        talks = Talk.objects.select_related("sender").filter(
             Q(sender=self.request.user, receiver=friend) |
             Q(receiver=self.request.user, sender=friend)
         ).order_by("time")
@@ -140,7 +142,7 @@ def email_change_done(request):
 
 class IconChangeView(LoginRequiredMixin, UpdateView):
     model = CustomUser
-    fields = ('img',)
+    form_class = ImageChangeForm
     template_name = "myapp/icon_change.html"
     success_url = reverse_lazy('myapp:icon_change_done')
 

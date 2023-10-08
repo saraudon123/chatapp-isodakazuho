@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 class CustomUser(AbstractUser):
-    img = models.ImageField(upload_to='media_local/', default="media_local/default_profile_img.jpg")
+    img = models.ImageField(upload_to='media_local/', default="static/default_profile_img.jpg")
 
 class Talk(models.Model):
     message = models.CharField(max_length=100)

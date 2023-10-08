@@ -1,5 +1,7 @@
 from dataclasses import fields
+from operator import mod
 from pyexpat import model
+from statistics import mode
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import CustomUser, Talk
@@ -25,4 +27,9 @@ class UsernameChangeForm(forms.ModelForm):
         fields = ('username',)
 
 class FriendSearchForm(forms.Form):
-    keyword = forms.CharField(max_length=20, label="名前で検索", required=False)
+    keyword = forms.CharField(max_length=20, label="名前とメールアドレスで検索", required=False)
+
+class ImageChangeForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ('img',)
